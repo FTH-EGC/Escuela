@@ -184,6 +184,11 @@
         const materiasArray = [];
         const profesoresArray = [];
 
+        //Globales
+        let EditGlobal = false;
+        let IdGlobal = 0;
+        let IdAlumnoGlobal = 0;
+
         document.addEventListener("DOMContentLoaded", () => {
             //Obtener Alumnos
             $.ajax({
@@ -270,88 +275,8 @@
         btnAgregarNAlumno.addEventListener("click", (e) => {
             e.preventDefault();
 
-
-            Swal.fire({
-                title: 'Agregar nuevo Alumno',
-                html: `
-                        <form class="formulario" id="FormAlumno">
-                            <div class="divInput">
-                                <label for="nombreAlumno">Nombre: </label>
-                                <input id="nombreAlumno" type="text" class="inputs" placeholder="Nombre:" />
-                            </div>
-                            <div class="divInput">
-                                <label for="apellidoPAlumno">Apellido Paterno: </label>
-                                <input id="apellidoAPlumno" type="text" class="inputs" placeholder="Apellido Paterno" />
-                            </div>
-                            <div class="divInput">
-                                <label for="apellidoMAlumno">Apellido Materno: </label>
-                                <input id="apellidoMAlumno" type="text" class="inputs" placeholder="Apellido Materno" />
-                            </div>
-                            <div class="divInput">
-                                <label for="curpAlumno">CURP: </label>
-                                <input id="curpAlumno" type="text" class="inputs" placeholder="CURP" />
-                            </div>
-                            <div class="divInput">
-                                <label for="txtTelefono">Teléfono: </label>
-                                <input id="txtTelefono" type="text" class="inputs" placeholder="Teléfono" />
-                            </div>
-                            <div class="divInput">
-                                <label for="txtCorreo">Correo: </label>
-                                <input id="txtCorreo" type="email" class="inputs" placeholder="Correo" />
-                            </div>
-                            <div class="divInput">
-                                <label for="txtEdad">Edad: </label>
-                                <input id="txtEdad" type="text" class="inputs" placeholder="Edad" />
-                            </div>
-                            <div class="divInput">
-                               <label for="selectGenre">Género: </label>
-                               <select id="selectGenre" class="inputs" placeholder="Seleccione un Género">
-                               </select>
-                            </div>
-                            <div class="divInput">
-                                <label for="txtDomicilio">Domicilio: </label>
-                                <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
-                            </div>
-                            <div class="divInput">
-                               <label for="selectMunicipio">Municipio: </label>
-                               <select id="selectMunicipio" class="inputs" placeholder="Seleccione un Municipio">
-                               </select>
-                            </div>
-                            <div class="divInput">
-                               <label for="selectMaterias">Materia: </label>
-                               <select id="selectMaterias" class="inputs" placeholder="Seleccione una Materia">
-                               </select>
-                            </div>
-                            <div class="divInput">
-                               <label for="selectProfesor">Profesor: </label>
-                               <select id="selectProfesor" class="inputs" placeholder="Seleccione un Profesor">
-                               </select>
-                            </div>
-                            <div class="divInput">
-                                <input  type="submit" class="btnsubmit"  />
-                            </div>
-
-
-                        </form>
-                `,
-                width: 1300,
-                didOpen: () => {
-
-                    //Agregar opciones a Select
-                    addOptions();
-
-                    //Evento Submit
-
-                    const FormAlumno = document.querySelector('#FormAlumno');
-
-                    FormAlumno.addEventListener('submit', addAlumno);
-                },
-                showCloseButton: true,
-                showCancelButton: false,
-                focusConfirm: false,
-                showConfirmButton: false,
-
-            })
+            openPopUpEditStudent();
+            
         })
 
 
@@ -473,12 +398,13 @@
 
             //------------------------------------------ Validaciones Campos ---------------------------------------------//
 
-            //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
+            //----------------------------------------- Pasa validaciones Agrega o Edita el usuario ---------------------------------//
+
 
             addStudent(txtNombre.value, txtApellidoP.value, txtApellidoM.value, txtCurp.value, txtTelefono.value, txtCorreo.value, txtEdad.value, select.value, selectMunicipio.value, selectMaterias.value, txtDomicilio.value, selectProfesor.value);
 
 
-            //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
+            //----------------------------------------- Pasa validaciones Agrega o Edita el usuario ---------------------------------//
 
         }
 
@@ -537,7 +463,47 @@
                 Domicilio: Domicilio,
                 Municipio: Municipio,
                 Materias: Materias,
-                Profesor: Profesor
+                Profesor: Profesor,
+                Alumno_Maestro_Materias_Id: IdGlobal,
+                Idaluno: IdAlumnoGlobal,
+            }
+
+            if (EditGlobal) {
+                $.ajax({
+                    type: "Post",
+                    data: objAlumno,
+                    url: "/Escuela/EditStudent/",
+                    success: (data) => {
+                        //console.log(data);
+                        $.ajax({
+                            type: "get",
+                            url: "/Escuela/GET_Students?Id=" + IdGlobal,
+                            dataType: 'json',
+                            success: (data) => {
+                                console.log("Último Alumno Id Edit", data);
+
+                                const trEditar = document.querySelector("#" + "trId" + IdGlobal).children;
+
+                                console.log(trEditar[1]);
+
+                                trEditar[1].textContent = data[0].Apellido_Paterno;
+                                trEditar[2].textContent = data[0].Apellido_Materno;
+                                trEditar[3].textContent = data[0].Nombre;
+                                trEditar[4].textContent = data[0].CURP;
+                                trEditar[5].textContent = data[0].Correo;
+                                trEditar[6].textContent = data[0].Telefono;
+                                trEditar[7].textContent = data[0].Edad;
+                                trEditar[8].textContent = data[0].Genero;
+                                trEditar[9].textContent = data[0].Municipio;
+                                trEditar[10].textContent = data[0].Domicilio;
+                                trEditar[11].textContent = data[0].NombreCompleto;
+                                trEditar[12].textContent = data[0].Materia;
+
+                            }
+                        })
+                    }
+                })
+                return;
             }
 
             $.ajax({
@@ -545,14 +511,14 @@
                 data: objAlumno,
                 url: "/Escuela/addNewStudent/",
                 success: (data) => {
-                    console.log(data);
+                    //console.log(data);
                     if (data[0].Respuesta == "Alumno Agregado Correctamente") {
                         $.ajax({
                             type: "get",
                             url: "/Escuela/GET_Last_Student",
                             dataType: 'json',
                             success: (data) => {
-                                console.log("Último Alumno", data);
+                                //console.log("Último Alumno", data);
                                 generateTable(data, true);
                             }
                         })
@@ -563,7 +529,6 @@
             })
 
         }
-
 
         const generateTable = (data, IsAdding) => {
             console.log("Estudiantes", data);
@@ -602,8 +567,12 @@
                 btnEliminar.textContent = 'Eliminar';
 
                 btnEliminar.setAttribute('id', da.Id);
+                btnEditar.setAttribute('id', da.Id);
+                //btnEditar.setAttribute('obj-data', JSON.stringify(da).split('"').join("&quot;"));
 
                 btnEliminar.addEventListener('click', deleteStudent);
+                btnEditar.addEventListener('click', updateStudent);
+
 
                 tdbtnEditar.appendChild(btnEditar);
                 tdbtnEliminar.appendChild(btnEliminar);
@@ -696,6 +665,161 @@
 
         }
 
+        const updateStudent = async (e) => {
+
+            const btnEditar = e.target;
+
+            const Id = btnEditar.getAttribute('Id');
+
+            console.log(Id);
+
+            $.ajax({
+                type: "GET",
+                url: "/Escuela/GET_Students?Id=" + Id,
+                dataType: 'json',
+                success: (data) => {
+                    console.log("Edita data", data);
+                    openPopUpEditStudent(data[0], true);
+                }
+            })
+
+            
+        }
+
+        const openPopUpEditStudent = (objData, IsEditing) => {
+            Swal.fire({
+                title: 'Agregar nuevo Alumno',
+                html: `
+                        <form class="formulario" id="FormAlumno">
+                            <div class="divInput">
+                                <label for="nombreAlumno">Nombre: </label>
+                                <input id="nombreAlumno" type="text" class="inputs" placeholder="Nombre:" />
+                            </div>
+                            <div class="divInput">
+                                <label for="apellidoPAlumno">Apellido Paterno: </label>
+                                <input id="apellidoAPlumno" type="text" class="inputs" placeholder="Apellido Paterno" />
+                            </div>
+                            <div class="divInput">
+                                <label for="apellidoMAlumno">Apellido Materno: </label>
+                                <input id="apellidoMAlumno" type="text" class="inputs" placeholder="Apellido Materno" />
+                            </div>
+                            <div class="divInput">
+                                <label for="curpAlumno">CURP: </label>
+                                <input id="curpAlumno" type="text" class="inputs" placeholder="CURP" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtTelefono">Teléfono: </label>
+                                <input id="txtTelefono" type="text" class="inputs" placeholder="Teléfono" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtCorreo">Correo: </label>
+                                <input id="txtCorreo" type="email" class="inputs" placeholder="Correo" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtEdad">Edad: </label>
+                                <input id="txtEdad" type="text" class="inputs" placeholder="Edad" />
+                            </div>
+                            <div class="divInput">
+                               <label for="selectGenre">Género: </label>
+                               <select id="selectGenre" class="inputs" placeholder="Seleccione un Género">
+                               </select>
+                            </div>
+                            <div class="divInput">
+                                <label for="txtDomicilio">Domicilio: </label>
+                                <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
+                            </div>
+                            <div class="divInput">
+                               <label for="selectMunicipio">Municipio: </label>
+                               <select id="selectMunicipio" class="inputs" placeholder="Seleccione un Municipio">
+                               </select>
+                            </div>
+                            <div class="divInput">
+                               <label for="selectMaterias">Materia: </label>
+                               <select id="selectMaterias" class="inputs" placeholder="Seleccione una Materia">
+                               </select>
+                            </div>
+                            <div class="divInput">
+                               <label for="selectProfesor">Profesor: </label>
+                               <select id="selectProfesor" class="inputs" placeholder="Seleccione un Profesor">
+                               </select>
+                            </div>
+                            <div class="divInput">
+                                <input  type="submit" class="btnsubmit"  />
+                            </div>
+
+
+                        </form>
+                `,
+                width: 1300,
+                didOpen: () => {
+
+                    //Agregar opciones a Select
+                    addOptions();
+
+                    //Llenar en caso de que esté editando
+
+                    if (IsEditing) {
+                        EditGlobal = true;
+                        fillInputsEdit(objData);
+
+                        return;
+                    }
+
+                    //Evento Submit
+
+                    const FormAlumno = document.querySelector('#FormAlumno');
+                    EditGlobal = false;
+                    FormAlumno.addEventListener('submit', addAlumno);
+                },
+                showCloseButton: true,
+                showCancelButton: false,
+                focusConfirm: false,
+                showConfirmButton: false,
+
+            })
+        }
+
+        const fillInputsEdit = (data) => {
+
+            const {Id, Nombre, Apellido_Paterno, Apellido_Materno, CURP, Telefono, Correo, Edad, Domicilio, Municipio_Id, Genero, Genero_Id, Maestro_Materias_Id, Alumno_Id, Profesor_Id, Maestro_Generos_Id, Municipio, Materia, NombreCompleto} = data;
+
+            const txtNombre = document.querySelector('#nombreAlumno');
+            const txtApellidoP = document.querySelector("#apellidoAPlumno");
+            const txtApellidoM = document.querySelector("#apellidoMAlumno");
+            const txtCurp = document.querySelector("#curpAlumno");
+            const txtTelefono = document.querySelector("#txtTelefono");
+            const txtCorreo = document.querySelector("#txtCorreo");
+            const txtEdad = document.querySelector("#txtEdad");
+            const txtDomicilio = document.querySelector("#txtDomicilio");
+            const select = document.querySelector("#selectGenre");
+            const selectMunicipio = document.querySelector("#selectMunicipio");
+            const selectMaterias = document.querySelector("#selectMaterias");
+            const selectProfesor = document.querySelector("#selectProfesor");
+
+
+            IdAlumnoGlobal = Alumno_Id;
+            IdGlobal = Id;
+            txtNombre.value = Nombre;
+            txtApellidoP.value = Apellido_Paterno;
+            txtApellidoM.value = Apellido_Materno;
+            txtCurp.value = CURP;
+            txtTelefono.value = Telefono;
+            txtCorreo.value = Correo;
+            txtEdad.value = Edad;
+            txtDomicilio.value = Domicilio;
+            select.value = Genero_Id;
+            selectMunicipio.value = Municipio_Id;
+            selectMaterias.value = Maestro_Materias_Id;
+            selectProfesor.value = Profesor_Id;
+
+
+            const FormAlumno = document.querySelector('#FormAlumno');
+            FormAlumno.addEventListener('submit', addAlumno);
+        }
+
+        const updateData = () => {
+
+        }
     </script>
 
 }

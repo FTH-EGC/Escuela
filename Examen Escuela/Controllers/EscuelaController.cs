@@ -24,10 +24,19 @@ namespace Examen_Escuela.Controllers
             return View();
         }
 
-        public JsonResult GET_Students() {
+        public JsonResult GET_Students(int Id = 0) {
 
 
-            DataTable dtAlumnos = sql.spGetData(new string[] { "@Accion:" + "GET_Students" });
+            string SPName = "";
+            if (Id == 0)
+            {
+                SPName = "GET_Students";
+            }
+            else {
+                SPName = "GET_LastInserted_Students_ById";
+            }
+
+            DataTable dtAlumnos = sql.spGetData(new string[] { "@Accion:" + SPName, "@Alumno_Id:" + Id });
 
             List<Alumnos_Registrados> AlumnosReturned = dtAlumnos.AsEnumerable().Select(a => new Alumnos_Registrados
             {
@@ -95,6 +104,7 @@ namespace Examen_Escuela.Controllers
 
             return data;
         }
+
         public JsonResult Get_Generos() {
             try {
 
@@ -224,7 +234,36 @@ namespace Examen_Escuela.Controllers
                 return null;
             }
         }
+        public JsonResult EditStudent(string Nombre, string ApellidoP, string ApellidoM, string CURP, string Telefono, string Correo, string Edad, string Genero, string Domicilio, string Municipio, string Materias, string Profesor, string Alumno_Maestro_Materias_Id, string Idaluno)
+        {
+            try
+            {
 
+                DataTable DTGeneros = sql.spGetDataTableResponse(new string[] { "@Accion:" + "Update_Student", "@Nombre:" + Nombre, "@Apellido_Paterno:" + ApellidoP, "@Apellido_Materno:" + ApellidoM, "@CURP:" + CURP, "@Telefono:" + Telefono,
+                "@Correo:" + Correo, "@Edad:" + Edad, "@Maestro_Generos_Id:" + Genero, "@Domicilio:" + Domicilio, "@Municipio_Id:" + Municipio,"@Maestro_Materias_Id:" + Materias, "@Profesor_Id:" + Profesor, "@Alumno_Id:" +  Idaluno, "@Alumno_Maestro_Materias:" + Alumno_Maestro_Materias_Id});
+
+                var respuestaDT = DTGeneros.Rows[0].ItemArray[0];
+
+                List<Response> respuesta = new List<Response>();
+                Response res = new Response()
+                {
+                    Respuesta = respuestaDT.ToString()
+                };
+
+                respuesta.Add(res);
+
+                var data = Json(respuesta, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
 
         public JsonResult DeleteStudent(string Id)
         {
