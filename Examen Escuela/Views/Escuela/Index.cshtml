@@ -82,6 +82,26 @@
             cursor: pointer;
             text-decoration: none;
         }
+    .btngenericed {
+        background-color: #6c2cbf;
+        border: none;
+        color: #fff;
+        border: 1px solid #6c2cbf;
+        font-size: 1rem;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+    }
+
+        .btngenericed:hover {
+            border: 1px solid #6c2cbf;
+            background-color: #fff;
+            color: #6c2cbf;
+            transition: all .5s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+        }
     select {
         min-width: 35rem;
         font-size: 1.5rem;
@@ -554,7 +574,7 @@
                 const tr = document.createElement('tr');
                 const th = document.createElement('th');
 
-                
+                tr.setAttribute('id', `trId${da.Id}`);
 
                 //td Columnas
                 const tdApellido_Paterno = document.createElement('td');
@@ -575,8 +595,19 @@
                 const btnEditar = document.createElement('a');
                 const btnEliminar = document.createElement('a');
 
-                btnEditar.classList.add('.btngeneric');
-                btnEliminar.classList.add('.btngeneric');
+                btnEditar.classList.add('btngenericed');
+                btnEliminar.classList.add('btngenericed');
+
+                btnEditar.textContent = 'Editar';
+                btnEliminar.textContent = 'Eliminar';
+
+                btnEliminar.setAttribute('id', da.Id);
+
+                btnEliminar.addEventListener('click', deleteStudent);
+
+                tdbtnEditar.appendChild(btnEditar);
+                tdbtnEliminar.appendChild(btnEliminar);
+
 
                 th.textContent = da.Id;
                 th.setAttribute('scope', 'row');
@@ -633,6 +664,35 @@
 
             });
 
+
+        }
+
+        const deleteStudent = (e) => {
+            console.log(e.target);
+
+            const btnEliminar = e.target;
+            const Id = btnEliminar.getAttribute('id');
+
+            const data = {Id: Id }
+
+            console.log(Id);
+
+            $.ajax({
+                type: 'Post',
+                data: data,
+                url: "/Escuela/DeleteStudent/",
+                success: (data) => {
+                    console.log("Eliminacion ", data);
+
+                    if (data[0].Respuesta == "Se ha eliminado al estudiante") {
+                        const trEliminar = document.querySelector("#" + "trId" + Id);
+
+                        console.log("trEliminar", trEliminar);
+
+                        trEliminar.remove();
+                    }
+                }
+            })
 
         }
 

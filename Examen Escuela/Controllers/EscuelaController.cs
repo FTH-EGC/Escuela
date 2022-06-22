@@ -225,5 +225,36 @@ namespace Examen_Escuela.Controllers
             }
         }
 
+
+        public JsonResult DeleteStudent(string Id)
+        {
+            try
+            {
+
+                DataTable DTGeneros = sql.spGetDataTableResponse(new string[] { "@Accion:" + "Delete_Student", "@Alumno_Maestro_Materias:" + Id, });
+
+                var respuestaDT = DTGeneros.Rows[0].ItemArray[0];
+
+                List<Response> respuesta = new List<Response>();
+                Response res = new Response()
+                {
+                    Respuesta = respuestaDT.ToString()
+                };
+
+                respuesta.Add(res);
+
+                var data = Json(respuesta, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
+
     }
 }
