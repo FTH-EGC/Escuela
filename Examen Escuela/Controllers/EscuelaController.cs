@@ -51,7 +51,27 @@ namespace Examen_Escuela.Controllers
             return data;
         }
 
+        public JsonResult Get_Generos() {
+            try {
 
+                DataTable DTGeneros = sql.spGetData(new string[] { "@Accion:" + "GET_Generos" });
+                List<Genero> LGeneros = DTGeneros.AsEnumerable().Select(a => new Genero { 
+                    Id = Convert.IsDBNull(a["Id"]) ? 0 : (int)a["Id"],
+                    Nombre = Convert.IsDBNull(a["Nombre"]) ? "" : (string)a["Nombre"]
+                }).ToList();
+
+
+                var data = Json(LGeneros, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex) {
+                return null;
+            }
+        }
 
 
     }

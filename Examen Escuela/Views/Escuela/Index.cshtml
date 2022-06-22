@@ -141,7 +141,14 @@
 
     <script>
 
+
+        //Arreglos
+
+        const generosArray = [];
+
+
         document.addEventListener("DOMContentLoaded", () => {
+            //Obtener Alumnos
             $.ajax({
                 type: "get",
                 url: "/Escuela/GET_Students",
@@ -151,6 +158,24 @@
                 }
 
             });
+
+            //Obtener Generos
+            $.ajax({
+                type: "GET",
+                url: "/Escuela/Get_Generos",
+                dataType: 'json',
+                success: (data) => {
+                    //console.log("Generos: ", data);
+
+                    data.forEach(da => {
+                        generosArray.push(da);
+                    })
+
+                    //console.log(generosArray);
+                }
+            });
+
+
         });
 
         const btnAgregarNAlumno = document.querySelector("#btnAgregarNAlumno");
@@ -215,19 +240,14 @@
                 width: 1300,
                 didOpen: () => {
 
+                    //Agregar opciones a Select
+                    addOptions();
+
                     //Evento Submit
 
                     const FormAlumno = document.querySelector('#FormAlumno');
 
-                    FormAlumno.addEventListener('submit', (e) => {
-                        e.preventDefault();
-
-                        const txtNombre = document.querySelector('#nombreAlumno');
-
-
-
-                        console.log("Enviando");
-                    });
+                    FormAlumno.addEventListener('submit', addAlumno);
                 },
                 showCloseButton: true,
                 showCancelButton: false,
@@ -238,6 +258,39 @@
         })
     
 
+        function addOptions() {
+
+            //Se agregan opciones al Select
+
+            const select = document.querySelector("#selectGenre");
+
+            generosArray.forEach(gen => {
+                const option = document.createElement('option');
+
+                option.setAttribute('id', gen.Id);
+                option.textContent = gen.Nombre;
+
+                select.appendChild(option);
+                
+
+            });
+        }
+
+
+        function addAlumno(e) {
+                e.preventDefault();
+
+                const txtNombre = document.querySelector('#nombreAlumno');
+                const txtApellidoP = document.querySelector("#apellidoPAlumno");
+                const txtApellidoM = document.querySelector("#apellidoMAlumno");
+                const txtCurp = document.querySelector("#curpAlumno");
+                const txtTelefono = document.querySelector("#txtTelefono");
+                const txtCorreo = document.querySelector("#txtCorreo");
+                const txtEdad = document.querySelector("#txtEdad");
+
+
+                console.log("Enviando");
+        }
 
 
     </script>

@@ -21,4 +21,8 @@ namespace Examen_Escuela.Models.ViewModels
         public string Genero { get; set; }
         public int Genero_Id { get; set; }
     }
+    public class Genero { 
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
 }
