@@ -25,4 +25,14 @@ namespace Examen_Escuela.Models.ViewModels
         public int Id { get; set; }
         public string Nombre { get; set; }
     }
+    public class Municipios
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
+    public class Maestro_Materias
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
 }

@@ -159,7 +159,8 @@
         //Arreglos
 
         const generosArray = [];
-
+        const municipiosArray = [];
+        const materiasArray = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             //Obtener Alumnos
@@ -189,6 +190,37 @@
                 }
             });
 
+            //Obtener Municipios
+            $.ajax({
+                type: "GET",
+                url: "/Escuela/Get_Municipios",
+                dataType: 'json',
+                success: (data) => {
+                    //console.log("Generos: ", data);
+
+                    data.forEach(da => {
+                        municipiosArray.push(da);
+                    })
+
+                    //console.log(generosArray);
+                }
+            });
+
+            //Obtener Materias
+            $.ajax({
+                type: "GET",
+                url: "/Escuela/Get_Materias",
+                dataType: 'json',
+                success: (data) => {
+                    //console.log("Generos: ", data);
+
+                    data.forEach(da => {
+                        materiasArray.push(da);
+                    })
+
+                    //console.log(generosArray);
+                }
+            });
 
         });
 
@@ -224,7 +256,7 @@
                             </div>
                             <div class="divInput">
                                 <label for="txtCorreo">Correo: </label>
-                                <input id="txtCorreo" type="text" class="inputs" placeholder="Correo" />
+                                <input id="txtCorreo" type="email" class="inputs" placeholder="Correo" />
                             </div>
                             <div class="divInput">
                                 <label for="txtEdad">Edad: </label>
@@ -240,8 +272,14 @@
                                 <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
                             </div>
                             <div class="divInput">
-                                <label for="txtMunicipio">Municipio: </label>
-                                <input id="txtMunicipio" type="text" class="inputs" placeholder="Municipio" />
+                               <label for="selectMunicipio">Género: </label>
+                               <select id="selectMunicipio" class="inputs" placeholder="Seleccione un Municipio">
+                               </select>
+                            </div>
+                                <div class="divInput">
+                               <label for="selectMaterias">Género: </label>
+                               <select id="selectMaterias" class="inputs" placeholder="Seleccione una Materia">
+                               </select>
                             </div>
                             <div class="divInput">
                                 <input  type="submit" class="btnsubmit"  />
@@ -269,13 +307,15 @@
 
             })
         })
-    
+
 
         function addOptions() {
 
             //Se agregan opciones al Select
 
             const select = document.querySelector("#selectGenre");
+            const selectMunicipio = document.querySelector("#selectMunicipio");
+            const selectMaterias = document.querySelector("#selectMaterias");
 
             generosArray.forEach(gen => {
                 const option = document.createElement('option');
@@ -284,9 +324,27 @@
                 option.textContent = gen.Nombre;
 
                 select.appendChild(option);
-                
-
             });
+
+            municipiosArray.forEach(mun => {
+                const option = document.createElement('option');
+
+                option.setAttribute('id', mun.Id);
+                option.textContent = mun.Nombre;
+
+                selectMunicipio.appendChild(option);
+            });
+
+            materiasArray.forEach(mat => {
+                const option = document.createElement('option');
+
+                option.setAttribute('id', mat.Id);
+                option.textContent = mat.Nombre;
+
+                selectMaterias.appendChild(option);
+            });
+
+
         }
 
 
@@ -294,19 +352,22 @@
             e.preventDefault();
 
             const txtNombre = document.querySelector('#nombreAlumno');
-            const txtApellidoP = document.querySelector("#apellidoPAlumno");
+            const txtApellidoP = document.querySelector("#apellidoAPlumno");
             const txtApellidoM = document.querySelector("#apellidoMAlumno");
             const txtCurp = document.querySelector("#curpAlumno");
             const txtTelefono = document.querySelector("#txtTelefono");
             const txtCorreo = document.querySelector("#txtCorreo");
             const txtEdad = document.querySelector("#txtEdad");
             const select = document.querySelector("#selectGenre");
+            const selectMunicipio = document.querySelector("#selectMunicipio");
+            const selectMaterias = document.querySelector("#selectMaterias");
 
-
+            let validacionEmail = false;
 
             if (txtNombre.value.trim() == "" || txtApellidoP.value.trim() == "" || txtApellidoM.value.trim() == ""
                 || txtCurp.value.trim() == "" || txtTelefono.value.trim() == "" || txtCorreo.value.trim() == ""
-                || txtCorreo.value.trim() == "" || txtEdad.value.trim() == "" || select.value == "") {
+                || txtCorreo.value.trim() == "" || txtEdad.value.trim() == "" || select.value == ""
+                || selectMunicipio.value == "" || selectMaterias.value == "") {
 
                 //Genera el error
                 errorMessage('Llene todos los campos solicitados');
@@ -321,6 +382,9 @@
                 errorDiv.remove();
             }
 
+            validacionEmail = validateEmail(txtCorreo.value);
+
+            console.log(validacionEmail);
 
             //console.log("Enviando");
         }
@@ -350,6 +414,11 @@
 
             //console.log("Error", formulario.parentElement);
 
+        }
+
+        const validateEmail = (email) => {
+
+            return /^(([^<>()[\]\.,;:\s@@\"]+(\.[^<>()[\]\.,;:\s@@\"]+)*)|(\".+\"))@@(([^<>()[\]\.,;:\s@@\"]+\.)+[^<>()[\]\.,;:\s@@\"]{2,})$/i.test(email);
         }
 
     </script>

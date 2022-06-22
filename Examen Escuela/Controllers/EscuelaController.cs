@@ -72,7 +72,56 @@ namespace Examen_Escuela.Controllers
                 return null;
             }
         }
+        public JsonResult Get_Municipios()
+        {
+            try
+            {
 
+                DataTable DTGeneros = sql.spGetData(new string[] { "@Accion:" + "GET_Municipios" });
+                List<Municipios> LGeneros = DTGeneros.AsEnumerable().Select(a => new Municipios
+                {
+                    Id = Convert.IsDBNull(a["Id"]) ? 0 : (int)a["Id"],
+                    Nombre = Convert.IsDBNull(a["Nombre"]) ? "" : (string)a["Nombre"]
+                }).ToList();
+
+
+                var data = Json(LGeneros, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
+        public JsonResult Get_Materias()
+        {
+            try
+            {
+
+                DataTable DTGeneros = sql.spGetData(new string[] { "@Accion:" + "GET_Materias" });
+                List<Maestro_Materias> LGeneros = DTGeneros.AsEnumerable().Select(a => new Maestro_Materias
+                {
+                    Id = Convert.IsDBNull(a["Id"]) ? 0 : (int)a["Id"],
+                    Nombre = Convert.IsDBNull(a["Nombre"]) ? "" : (string)a["Nombre"]
+                }).ToList();
+
+
+                var data = Json(LGeneros, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
 
     }
 }
