@@ -119,35 +119,36 @@
         <a id="btnAgregarNAlumno" class="btngeneric">Agregar nuevo Alumno</a>
     </div>
 
-
-    <table class="default">
-
-        <tr>
-
-            <td>Celda 1</td>
-
-            <td>Celda 2</td>
-
-            <td>Celda 3</td>
-
-        </tr>
-
-        <tr>
-
-            <td>Celda 4</td>
-
-            <td>Celda 5</td>
-
-            <td>Celda 6</td>
-
-        </tr>
-
-    </table>
-
+    
 
 </div>
 
+<div>
+    <table class="table table-condensed" style="font-size: 1.2rem; min-width:1500px;">
+        <thead>
+            <tr id="TitulosTabla">
+                <th scope="col">Id</th>
+                <th scope="col">Apellido Paterno</th>
+                <th scope="col">Apellido Materno</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">CURP</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Telefono</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Genero</th>
+                <th scope="col">Municipio</th>
+                <th scope="col">Domicilio</th>
+                <th scope="col">NombreCompleto</th>
+                <th scope="col">Materia</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+            </tr>
+        </thead>
+        <tbody id="tBodyAlumnos">
+        </tbody>
+    </table>
 
+</div>
 
 @section scripts{
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -161,6 +162,7 @@
         const generosArray = [];
         const municipiosArray = [];
         const materiasArray = [];
+        const profesoresArray = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             //Obtener Alumnos
@@ -169,7 +171,10 @@
                 url: "/Escuela/GET_Students",
                 dataType: 'json',
                 success: (data) => {
-                    console.log("Data", data);
+                    //console.log("Data", data);
+
+
+                    generateTable(data, false);
                 }
 
             });
@@ -216,6 +221,22 @@
 
                     data.forEach(da => {
                         materiasArray.push(da);
+                    })
+
+                    //console.log(generosArray);
+                }
+            });
+
+            //Obtener Profesores
+            $.ajax({
+                type: "GET",
+                url: "/Escuela/Get_Profesores",
+                dataType: 'json',
+                success: (data) => {
+                    //console.log("Generos: ", data);
+
+                    data.forEach(da => {
+                        profesoresArray.push(da);
                     })
 
                     //console.log(generosArray);
@@ -276,9 +297,14 @@
                                <select id="selectMunicipio" class="inputs" placeholder="Seleccione un Municipio">
                                </select>
                             </div>
-                                <div class="divInput">
+                            <div class="divInput">
                                <label for="selectMaterias">Materia: </label>
                                <select id="selectMaterias" class="inputs" placeholder="Seleccione una Materia">
+                               </select>
+                            </div>
+                            <div class="divInput">
+                               <label for="selectProfesor">Profesor: </label>
+                               <select id="selectProfesor" class="inputs" placeholder="Seleccione un Profesor">
                                </select>
                             </div>
                             <div class="divInput">
@@ -316,6 +342,7 @@
             const select = document.querySelector("#selectGenre");
             const selectMunicipio = document.querySelector("#selectMunicipio");
             const selectMaterias = document.querySelector("#selectMaterias");
+            const selectProfesor = document.querySelector("#selectProfesor");
 
             generosArray.forEach(gen => {
                 const option = document.createElement('option');
@@ -347,8 +374,20 @@
                 selectMaterias.appendChild(option);
             });
 
+            profesoresArray.forEach(pro => {
+                const option = document.createElement('option');
+
+                option.setAttribute('id', pro.Id);
+                option.textContent = pro.NombreCompleto;
+                option.value = pro.Id;
+
+                selectProfesor.appendChild(option);
+            });
+
 
         }
+
+
 
 
         function addAlumno(e) {
@@ -365,6 +404,7 @@
             const select = document.querySelector("#selectGenre");
             const selectMunicipio = document.querySelector("#selectMunicipio");
             const selectMaterias = document.querySelector("#selectMaterias");
+            const selectProfesor = document.querySelector("#selectProfesor");
 
             let validacionEmail = false;
             let validacionTelefono = false;
@@ -373,7 +413,7 @@
             if (txtNombre.value.trim() == "" || txtApellidoP.value.trim() == "" || txtApellidoM.value.trim() == ""
                 || txtCurp.value.trim() == "" || txtTelefono.value.trim() == "" || txtCorreo.value.trim() == ""
                 || txtCorreo.value.trim() == "" || txtEdad.value.trim() == "" || select.value == ""
-                || selectMunicipio.value == "" || selectMaterias.value == "" || txtDomicilio.value.trim() == "") {
+                || selectMunicipio.value == "" || selectMaterias.value == "" || txtDomicilio.value.trim() == "" || selectProfesor.value == "") {
 
                 //Genera el error
                 errorMessage('Llene todos los campos solicitados');
@@ -415,13 +455,12 @@
 
             //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
 
-            addStudent(txtNombre.value, txtApellidoP.value, txtApellidoM.value, txtCurp.value, txtTelefono.value, txtCorreo.value, txtEdad.value, select.value, selectMunicipio.value, selectMaterias.value, txtDomicilio.value);
+            addStudent(txtNombre.value, txtApellidoP.value, txtApellidoM.value, txtCurp.value, txtTelefono.value, txtCorreo.value, txtEdad.value, select.value, selectMunicipio.value, selectMaterias.value, txtDomicilio.value, selectProfesor.value);
 
 
             //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
 
         }
-
 
         const errorMessage = (mensaje) => {
 
@@ -464,7 +503,7 @@
             return telefono.match(/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/);
         }
 
-        const addStudent = (Nombre, ApellidoP, ApellidoM, CURP, Telefono, Correo, Edad, Genero, Municipio, Materias, Domicilio) => {
+        const addStudent = (Nombre, ApellidoP, ApellidoM, CURP, Telefono, Correo, Edad, Genero, Municipio, Materias, Domicilio, Profesor) => {
 
             const objAlumno = {
                 Nombre: Nombre,
@@ -477,7 +516,8 @@
                 Genero: Genero,
                 Domicilio: Domicilio,
                 Municipio: Municipio,
-                Materias: Materias
+                Materias: Materias,
+                Profesor: Profesor
             }
 
             $.ajax({
@@ -486,8 +526,113 @@
                 url: "/Escuela/addNewStudent/",
                 success: (data) => {
                     console.log(data);
+                    if (data[0].Respuesta == "Alumno Agregado Correctamente") {
+                        $.ajax({
+                            type: "get",
+                            url: "/Escuela/GET_Last_Student",
+                            dataType: 'json',
+                            success: (data) => {
+                                console.log("Último Alumno", data);
+                                generateTable(data, true);
+                            }
+                        })
+                    }
+
+
                 }
             })
+
+        }
+
+
+        const generateTable = (data, IsAdding) => {
+            console.log("Estudiantes", data);
+
+            const tBodyAlumnos = document.querySelector('#tBodyAlumnos');
+
+            data.forEach(da => {
+                const tr = document.createElement('tr');
+                const th = document.createElement('th');
+
+                
+
+                //td Columnas
+                const tdApellido_Paterno = document.createElement('td');
+                const tdApellido_Materno = document.createElement('td');
+                const tdNombre = document.createElement('td');
+                const tdCURP = document.createElement('td');
+                const tdCorreo = document.createElement('td');
+                const tdTelefono = document.createElement('td');
+                const tdEdad = document.createElement('td');
+                const tdGenero = document.createElement('td');
+                const tdMunicipio = document.createElement('td');
+                const tdDomicilio = document.createElement('td');
+                const tdNombreCompleto = document.createElement('td');
+                const tdMateria = document.createElement('td');
+                const tdbtnEditar = document.createElement('td');
+                const tdbtnEliminar = document.createElement('td');
+
+                const btnEditar = document.createElement('a');
+                const btnEliminar = document.createElement('a');
+
+                btnEditar.classList.add('.btngeneric');
+                btnEliminar.classList.add('.btngeneric');
+
+                th.textContent = da.Id;
+                th.setAttribute('scope', 'row');
+
+                tdApellido_Paterno.textContent = da.Apellido_Paterno;
+                tdApellido_Materno.textContent = da.Apellido_Materno;
+                tdNombre.textContent = da.Nombre;
+                tdCURP.textContent = da.CURP;
+                tdCorreo.textContent = da.Correo;
+                tdTelefono.textContent = da.Telefono;
+                tdEdad.textContent = da.Edad;
+                tdGenero.textContent = da.Genero;
+                tdMunicipio.textContent = da.Municipio;
+                tdDomicilio.textContent = da.Domicilio;
+                tdNombreCompleto.textContent = da.NombreCompleto;
+                tdMateria.textContent = da.Materia;
+
+
+                if (IsAdding) {
+                    tr.prepend(tdbtnEliminar);
+                    tr.prepend(tdbtnEditar);
+                    tr.prepend(tdMateria);
+                    tr.prepend(tdNombreCompleto);
+                    tr.prepend(tdDomicilio);
+                    tr.prepend(tdMunicipio);
+                    tr.prepend(tdGenero);
+                    tr.prepend(tdEdad);
+                    tr.prepend(tdTelefono);
+                    tr.prepend(tdCorreo);
+                    tr.prepend(tdCURP);
+                    tr.prepend(tdNombre);
+                    tr.prepend(tdApellido_Materno);
+                    tr.prepend(tdApellido_Paterno);
+                    tr.prepend(th);
+                    tBodyAlumnos.prepend(tr);
+                } else {
+                    tBodyAlumnos.appendChild(tr);
+                    tr.appendChild(th);
+                    tr.appendChild(tdApellido_Paterno);
+                    tr.appendChild(tdApellido_Materno);
+                    tr.appendChild(tdNombre);
+                    tr.appendChild(tdCURP);
+                    tr.appendChild(tdCorreo);
+                    tr.appendChild(tdTelefono);
+                    tr.appendChild(tdEdad);
+                    tr.appendChild(tdGenero);
+                    tr.appendChild(tdMunicipio);
+                    tr.appendChild(tdDomicilio);
+                    tr.appendChild(tdNombreCompleto);
+                    tr.appendChild(tdMateria);
+                    tr.appendChild(tdbtnEditar);
+                    tr.appendChild(tdbtnEliminar);
+                }
+
+            });
+
 
         }
 

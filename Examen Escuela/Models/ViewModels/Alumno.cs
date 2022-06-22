@@ -47,4 +47,25 @@ namespace Examen_Escuela.Models.ViewModels
         public string Apellido_Materno { get; set; }
         public string NombreCompleto { get; set; }
     }
+    public class Alumnos_Registrados {
+        public int Id { get; set; }
+        public int Alumno_Id { get; set; }
+        public int Profesor_Id { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido_Paterno { get; set; }
+        public string Apellido_Materno { get; set; }
+        public string CURP { get; set; }
+        public string Telefono { get; set; }
+        public string Correo { get; set; }
+        public int Edad { get; set; }
+        public int Maestro_Generos_Id { get; set; }
+        public string Domicilio { get; set; }
+        public string Municipio { get; set; }
+        public string Materia { get; set; }
+        public string Genero { get; set; }
+        public string NombreCompleto { get; set; }
+        public int Genero_Id { get; set; }
+        public int Municipio_Id { get; set; }
+        public int Maestro_Materias_Id { get; set; }
+    }
 }
