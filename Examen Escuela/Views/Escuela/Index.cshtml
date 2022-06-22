@@ -94,6 +94,20 @@
     select option {
         font-size: 1.5rem;
     }
+
+    .errorDiv {
+        background-color: #ffe8ed;
+        border: 2px solid #ad2323;
+        padding: 1rem;
+        /*max-width: 25rem;*/
+        text-align: center;
+    }
+    .erroMensaje {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #ad2323;
+        font-weight: 500;
+    }
 </style>
 
 
@@ -218,8 +232,7 @@
                             </div>
                             <div class="divInput">
                                <label for="selectGenre">Género: </label>
-                               <select id="selectGenre" class="inputs">
-                                <option>Seleccionar Género</option>
+                               <select id="selectGenre" class="inputs" placeholder="Seleccione un Género">
                                </select>
                             </div>
                             <div class="divInput">
@@ -227,8 +240,8 @@
                                 <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
                             </div>
                             <div class="divInput">
-                                <label for="txtMunicipio">Domicilio: </label>
-                                <input id="txtMunicipio" type="text" class="inputs" placeholder="Domicilio" />
+                                <label for="txtMunicipio">Municipio: </label>
+                                <input id="txtMunicipio" type="text" class="inputs" placeholder="Municipio" />
                             </div>
                             <div class="divInput">
                                 <input  type="submit" class="btnsubmit"  />
@@ -278,20 +291,66 @@
 
 
         function addAlumno(e) {
-                e.preventDefault();
+            e.preventDefault();
 
-                const txtNombre = document.querySelector('#nombreAlumno');
-                const txtApellidoP = document.querySelector("#apellidoPAlumno");
-                const txtApellidoM = document.querySelector("#apellidoMAlumno");
-                const txtCurp = document.querySelector("#curpAlumno");
-                const txtTelefono = document.querySelector("#txtTelefono");
-                const txtCorreo = document.querySelector("#txtCorreo");
-                const txtEdad = document.querySelector("#txtEdad");
+            const txtNombre = document.querySelector('#nombreAlumno');
+            const txtApellidoP = document.querySelector("#apellidoPAlumno");
+            const txtApellidoM = document.querySelector("#apellidoMAlumno");
+            const txtCurp = document.querySelector("#curpAlumno");
+            const txtTelefono = document.querySelector("#txtTelefono");
+            const txtCorreo = document.querySelector("#txtCorreo");
+            const txtEdad = document.querySelector("#txtEdad");
+            const select = document.querySelector("#selectGenre");
 
 
-                console.log("Enviando");
+
+            if (txtNombre.value.trim() == "" || txtApellidoP.value.trim() == "" || txtApellidoM.value.trim() == ""
+                || txtCurp.value.trim() == "" || txtTelefono.value.trim() == "" || txtCorreo.value.trim() == ""
+                || txtCorreo.value.trim() == "" || txtEdad.value.trim() == "" || select.value == "") {
+
+                //Genera el error
+                errorMessage('Llene todos los campos solicitados');
+
+                return;
+            }
+
+            //Eliminar error de campos vacíos
+            const errorDiv = document.querySelector(".errorDiv");
+
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+
+
+            //console.log("Enviando");
         }
 
+
+        const errorMessage = (mensaje) => {
+
+            const formulario = document.querySelector("#FormAlumno");
+
+            const divError = document.createElement('div');
+            const pMensaje = document.createElement('p');
+
+
+            //Parrafo Mensaje
+            pMensaje.classList.add('erroMensaje');
+            pMensaje.textContent = mensaje;
+
+            //DivMensaje
+            divError.classList.add('errorDiv');
+            divError.appendChild(pMensaje);
+
+            //Insertar div de error
+
+            const divContenedor = formulario.parentElement;
+
+            divContenedor.prepend(divError);
+
+            //console.log("Error", formulario.parentElement);
+
+        }
 
     </script>
 
