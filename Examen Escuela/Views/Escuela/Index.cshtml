@@ -1,0 +1,245 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    body {
+        font-size: 62.5%;
+    }
+    .contenedor {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .inputs{
+        border: none;
+        border-bottom: 1px solid #e5e5e5;
+
+    }
+    label {
+        font-weight: 300;
+        font-size: 1.5rem;
+        color: #a3a3a3;
+        margin-bottom: 1.2rem;
+    }
+    .divInput {
+        display: flex;
+        margin: 2rem 0; 
+    }
+    input {
+        min-width: 35rem;
+        font-size: 1.5rem;
+    }
+        input:focus {
+            outline: none;
+            border-bottom: 1px solid #681ad6;
+            transition: all .7s ease-in-out;
+        }
+    .formulario {
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+        gap: 5rem;
+    }
+    .divInput {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+    }
+    .btnsubmit {
+        background-color: #6c2cbf;
+        border: none;
+        width: 4rem;
+        height: 4rem;
+        color: #fff;
+        border: 1px solid #6c2cbf;
+        font-size: 1.5rem;
+        border-radius: 10px;
+    }
+        .btnsubmit:hover {
+            border: 1px solid #6c2cbf;
+            background-color: #fff;
+            color: #6c2cbf;
+            transition: all .5s ease-in-out;
+        }
+    .btngeneric {
+        background-color: #6c2cbf;
+        border: none;
+        color: #fff;
+        border: 1px solid #6c2cbf;
+        font-size: 1.5rem;
+        text-decoration: none;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+    }
+
+        .btngeneric:hover {
+            border: 1px solid #6c2cbf;
+            background-color: #fff;
+            color: #6c2cbf;
+            transition: all .5s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    select {
+        min-width: 35rem;
+        font-size: 1.5rem;
+    }
+        select:focus {
+            outline: none;
+            border-bottom: 1px solid #681ad6;
+            transition: all .7s ease-in-out;
+        }
+    select option {
+        font-size: 1.5rem;
+    }
+</style>
+
+
+<div class="contenedor">
+
+    <h2>Alumnos</h2>
+
+    <div style="margin: 2rem 0;">
+        <a id="btnAgregarNAlumno" class="btngeneric">Agregar nuevo Alumno</a>
+    </div>
+
+
+    <table class="default">
+
+        <tr>
+
+            <td>Celda 1</td>
+
+            <td>Celda 2</td>
+
+            <td>Celda 3</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Celda 4</td>
+
+            <td>Celda 5</td>
+
+            <td>Celda 6</td>
+
+        </tr>
+
+    </table>
+
+
+</div>
+
+
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            $.ajax({
+                type: "get",
+                url: "/Escuela/GET_Students",
+                dataType: 'json',
+                success: (data) => {
+                    console.log("Data", data);
+                }
+
+            });
+        });
+
+        const btnAgregarNAlumno = document.querySelector("#btnAgregarNAlumno");
+
+        btnAgregarNAlumno.addEventListener("click", (e) => {
+            e.preventDefault();
+
+
+            Swal.fire({
+                title: 'Agregar nuevo Alumno',
+                html: `
+                        <form class="formulario" id="FormAlumno">
+                            <div class="divInput">
+                                <label for="nombreAlumno">Nombre: </label>
+                                <input id="nombreAlumno" type="text" class="inputs" placeholder="Nombre:" />
+                            </div>
+                            <div class="divInput">
+                                <label for="apellidoPAlumno">Apellido Paterno: </label>
+                                <input id="apellidoAPlumno" type="text" class="inputs" placeholder="Apellido Paterno" />
+                            </div>
+                            <div class="divInput">
+                                <label for="apellidoMAlumno">Apellido Materno: </label>
+                                <input id="apellidoMAlumno" type="text" class="inputs" placeholder="Apellido Materno" />
+                            </div>
+                            <div class="divInput">
+                                <label for="curpAlumno">CURP: </label>
+                                <input id="curpAlumno" type="text" class="inputs" placeholder="CURP" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtTelefono">Teléfono: </label>
+                                <input id="txtTelefono" type="text" class="inputs" placeholder="Teléfono" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtCorreo">Correo: </label>
+                                <input id="txtCorreo" type="text" class="inputs" placeholder="Correo" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtEdad">Edad: </label>
+                                <input id="txtEdad" type="text" class="inputs" placeholder="Edad" />
+                            </div>
+                            <div class="divInput">
+                               <label for="selectGenre">Género: </label>
+                               <select id="selectGenre" class="inputs">
+                                <option>Seleccionar Género</option>
+                               </select>
+                            </div>
+                            <div class="divInput">
+                                <label for="txtDomicilio">Domicilio: </label>
+                                <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
+                            </div>
+                            <div class="divInput">
+                                <label for="txtMunicipio">Domicilio: </label>
+                                <input id="txtMunicipio" type="text" class="inputs" placeholder="Domicilio" />
+                            </div>
+                            <div class="divInput">
+                                <input  type="submit" class="btnsubmit"  />
+                            </div>
+
+
+                        </form>
+                `,
+                width: 1300,
+                didOpen: () => {
+
+                    //Evento Submit
+
+                    const FormAlumno = document.querySelector('#FormAlumno');
+
+                    FormAlumno.addEventListener('submit', (e) => {
+                        e.preventDefault();
+
+                        const txtNombre = document.querySelector('#nombreAlumno');
+
+
+
+                        console.log("Enviando");
+                    });
+                },
+                showCloseButton: true,
+                showCancelButton: false,
+                focusConfirm: false,
+                showConfirmButton: false,
+
+            })
+        })
+    
+
+
+
+    </script>
+
+}
