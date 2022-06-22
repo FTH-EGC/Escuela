@@ -17,9 +17,10 @@ namespace Examen_Escuela.Models.ViewModels
         public int Edad { get; set; }
         public int Maestro_Generos_Id { get; set; }
         public string Domicilio { get; set; }
-        public string Municipio { get; set; }
         public string Genero { get; set; }
         public int Genero_Id { get; set; }
+        public int Municipio_Id { get; set; }
+        public int Maestro_Materias_Id { get; set; }
     }
     public class Genero { 
         public int Id { get; set; }

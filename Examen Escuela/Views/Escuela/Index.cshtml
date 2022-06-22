@@ -272,12 +272,12 @@
                                 <input id="txtDomicilio" type="text" class="inputs" placeholder="Domicilio" />
                             </div>
                             <div class="divInput">
-                               <label for="selectMunicipio">Género: </label>
+                               <label for="selectMunicipio">Municipio: </label>
                                <select id="selectMunicipio" class="inputs" placeholder="Seleccione un Municipio">
                                </select>
                             </div>
                                 <div class="divInput">
-                               <label for="selectMaterias">Género: </label>
+                               <label for="selectMaterias">Materia: </label>
                                <select id="selectMaterias" class="inputs" placeholder="Seleccione una Materia">
                                </select>
                             </div>
@@ -363,6 +363,8 @@
             const selectMaterias = document.querySelector("#selectMaterias");
 
             let validacionEmail = false;
+            let validacionTelefono = false;
+            let validacionCurp = false;
 
             if (txtNombre.value.trim() == "" || txtApellidoP.value.trim() == "" || txtApellidoM.value.trim() == ""
                 || txtCurp.value.trim() == "" || txtTelefono.value.trim() == "" || txtCorreo.value.trim() == ""
@@ -382,11 +384,34 @@
                 errorDiv.remove();
             }
 
+            //------------------------------------------ Validaciones Campos ---------------------------------------------//
+
             validacionEmail = validateEmail(txtCorreo.value);
 
-            console.log(validacionEmail);
+            if (!validacionEmail) {
+                errorMessage('Use un correo válido');
+                return;
+            }
 
-            //console.log("Enviando");
+            validacionTelefono = validateTelefono(txtTelefono.value);
+
+            if (!validacionTelefono) {
+                errorMessage('Use un número de teléfono válido');
+                return;
+            }
+
+            validacionCurp = validateCurp(txtCurp.value);
+
+            if (!validacionCurp) {
+                errorMessage('Use un CURP válido');
+                return;
+            }
+
+            //------------------------------------------ Validaciones Campos ---------------------------------------------//
+
+
+
+
         }
 
 
@@ -419,6 +444,18 @@
         const validateEmail = (email) => {
 
             return /^(([^<>()[\]\.,;:\s@@\"]+(\.[^<>()[\]\.,;:\s@@\"]+)*)|(\".+\"))@@(([^<>()[\]\.,;:\s@@\"]+\.)+[^<>()[\]\.,;:\s@@\"]{2,})$/i.test(email);
+        }
+
+        const validateTelefono = (telefono) => {
+
+            //return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.match(telefono);
+            return telefono.match(/\d/g).length === 10;
+        }
+
+        const validateCurp = (telefono) => {
+
+            //return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.match(telefono);
+            return telefono.match(/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/);
         }
 
     </script>
