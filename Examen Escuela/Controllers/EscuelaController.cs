@@ -38,7 +38,7 @@ namespace Examen_Escuela.Controllers
                 Correo = Convert.IsDBNull(a["Correo"]) ? "" : (string)a["Correo"],
                 Edad = Convert.IsDBNull(a["Edad"]) ? 0 : (int)a["Edad"],
                 Domicilio = Convert.IsDBNull(a["Domicilio"]) ? "" : (string)a["Domicilio"],
-                Municipio = Convert.IsDBNull(a["Municipio"]) ? "" : (string)a["Municipio"],
+                Municipio_Id = Convert.IsDBNull(a["Municipio_Id"]) ? 0 : (int)a["Municipio_Id"],
                 Genero = Convert.IsDBNull(a["Genero"]) ? "" : (string)a["Genero"],
                 Genero_Id = Convert.IsDBNull(a["Genero_Id"]) ? 0 : (int)a["Genero_Id"],
 
@@ -111,6 +111,37 @@ namespace Examen_Escuela.Controllers
 
 
                 var data = Json(LGeneros, JsonRequestBehavior.AllowGet);
+
+                data.MaxJsonLength = int.MaxValue;
+
+                return data;
+
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
+
+        public JsonResult addNewStudent(string Nombre, string ApellidoP, string ApellidoM, string CURP, string Telefono, string Correo, string Edad, string Genero,string Domicilio,string Municipio, string Materias)
+        {
+            try
+            {
+
+                DataTable DTGeneros = sql.spGetDataTableResponse(new string[] { "@Accion:" + "Insert_New_Student", "@Nombre:" + Nombre, "@Apellido_Paterno:" + ApellidoP, "@Apellido_Materno:" + ApellidoM, "@CURP:" + CURP, "@Telefono:" + Telefono,
+                "@Correo:" + Correo, "@Edad:" + Edad, "@Maestro_Generos_Id:" + Genero, "@Domicilio:" + Domicilio, "@Municipio_Id:" + Municipio,"@Maestro_Materias_Id:" + Materias  });
+
+                var respuestaDT = DTGeneros.Rows[0].ItemArray[0];
+
+                List<Response> respuesta = new List<Response>();
+                Response res = new Response()
+                {
+                    Respuesta = respuestaDT.ToString()
+                };
+
+                respuesta.Add(res);
+
+                var data = Json(respuesta, JsonRequestBehavior.AllowGet);
 
                 data.MaxJsonLength = int.MaxValue;
 

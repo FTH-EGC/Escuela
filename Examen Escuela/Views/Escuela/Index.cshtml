@@ -322,6 +322,7 @@
 
                 option.setAttribute('id', gen.Id);
                 option.textContent = gen.Nombre;
+                option.value = gen.Id;
 
                 select.appendChild(option);
             });
@@ -331,6 +332,7 @@
 
                 option.setAttribute('id', mun.Id);
                 option.textContent = mun.Nombre;
+                option.value = mun.Id;
 
                 selectMunicipio.appendChild(option);
             });
@@ -340,6 +342,7 @@
 
                 option.setAttribute('id', mat.Id);
                 option.textContent = mat.Nombre;
+                option.value = mat.Id;
 
                 selectMaterias.appendChild(option);
             });
@@ -358,6 +361,7 @@
             const txtTelefono = document.querySelector("#txtTelefono");
             const txtCorreo = document.querySelector("#txtCorreo");
             const txtEdad = document.querySelector("#txtEdad");
+            const txtDomicilio = document.querySelector("#txtDomicilio");
             const select = document.querySelector("#selectGenre");
             const selectMunicipio = document.querySelector("#selectMunicipio");
             const selectMaterias = document.querySelector("#selectMaterias");
@@ -369,7 +373,7 @@
             if (txtNombre.value.trim() == "" || txtApellidoP.value.trim() == "" || txtApellidoM.value.trim() == ""
                 || txtCurp.value.trim() == "" || txtTelefono.value.trim() == "" || txtCorreo.value.trim() == ""
                 || txtCorreo.value.trim() == "" || txtEdad.value.trim() == "" || select.value == ""
-                || selectMunicipio.value == "" || selectMaterias.value == "") {
+                || selectMunicipio.value == "" || selectMaterias.value == "" || txtDomicilio.value.trim() == "") {
 
                 //Genera el error
                 errorMessage('Llene todos los campos solicitados');
@@ -409,8 +413,12 @@
 
             //------------------------------------------ Validaciones Campos ---------------------------------------------//
 
+            //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
+
+            addStudent(txtNombre.value, txtApellidoP.value, txtApellidoM.value, txtCurp.value, txtTelefono.value, txtCorreo.value, txtEdad.value, select.value, selectMunicipio.value, selectMaterias.value, txtDomicilio.value);
 
 
+            //----------------------------------------- Pasa validaciones Agrega el usuario ---------------------------------//
 
         }
 
@@ -448,14 +456,39 @@
 
         const validateTelefono = (telefono) => {
 
-            //return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.match(telefono);
             return telefono.match(/\d/g).length === 10;
         }
 
         const validateCurp = (telefono) => {
 
-            //return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.match(telefono);
             return telefono.match(/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/);
+        }
+
+        const addStudent = (Nombre, ApellidoP, ApellidoM, CURP, Telefono, Correo, Edad, Genero, Municipio, Materias, Domicilio) => {
+
+            const objAlumno = {
+                Nombre: Nombre,
+                ApellidoP: ApellidoP,
+                ApellidoM: ApellidoM,
+                CURP: CURP,
+                Telefono: Telefono,
+                Correo: Correo,
+                Edad: Edad,
+                Genero: Genero,
+                Domicilio: Domicilio,
+                Municipio: Municipio,
+                Materias: Materias
+            }
+
+            $.ajax({
+                type: "Post",
+                data: objAlumno,
+                url: "/Escuela/addNewStudent/",
+                success: (data) => {
+                    console.log(data);
+                }
+            })
+
         }
 
     </script>

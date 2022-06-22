@@ -66,6 +66,34 @@ namespace Examen_Escuela.Classes
                 
             }
         }
+        public DataTable spGetDataTableResponse(string[] parameters)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLConnectionString"].ConnectionString))
+            {
+                con.Open();
+                DataTable dt = new DataTable();
+                using (SqlCommand cmd = new SqlCommand("Examen_Escuela", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+
+                        var parameterSplit = parameters[i].Split(':');
+
+
+                        cmd.Parameters.AddWithValue(parameterSplit[0], parameterSplit[1]);
+
+                    }
+
+                    //cmd.ExecuteNonQuery();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+
+                    return dt;
+                }
+            }
+        }
 
     }
 }

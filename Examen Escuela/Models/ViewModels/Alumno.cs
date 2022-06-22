@@ -36,4 +36,15 @@ namespace Examen_Escuela.Models.ViewModels
         public int Id { get; set; }
         public string Nombre { get; set; }
     }
+
+    public class Response { 
+       public string Respuesta { get; set; }
+    }
+    public class Profesor { 
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido_Paterno { get; set; }
+        public string Apellido_Materno { get; set; }
+        public string NombreCompleto { get; set; }
+    }
 }
